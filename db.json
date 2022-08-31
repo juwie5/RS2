@@ -1,0 +1,50 @@
+{
+  "user": [
+    {
+      "id": "1",
+      "userId": "1",
+      "LoginName": "john",
+      "password": "123456"
+    },
+    {
+      "id": "2",
+      "userId": "2",
+      "LoginName": "doe",
+      "password": "123456"
+    }
+  ],
+  "product": [
+    {
+      "id": "1",
+      "ProductName": "The Godfather",
+      "ProductType": "Books",
+      "Description": "A staggering triumph...,the definitive novel about a sinister fraternity of crime"
+    },
+    {
+      "id": "2",
+      "ProductName": "Playboy",
+      "ProductType": "Music",
+      "Description": "Fireboy DML's third studio outing sees him shift moods entirely"
+    },
+    {
+      "id": "3",
+      "ProductName": "Assassin's Creed",
+      "ProductType": "Games",
+      "Description": "Action-adventure  game set in an open world environment"
+    }
+  ],
+  "basket": [
+    {
+      "id": "1",
+      "userId": "1",
+      "productId": "1"
+    }
+  ],
+  "show": [
+    {
+      "id": "1",
+      "userId": "1",
+      "productId": "undefined"
+    }
+  ]
+}
