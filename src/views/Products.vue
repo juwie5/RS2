@@ -2,7 +2,6 @@
     <div class="contain">
         <nav class="navbar">
             <ul>
-                <li>{{user[LoginName]}}</li>
                 <li @click="signOut">Logout</li>
             </ul>
         </nav>
@@ -15,12 +14,11 @@
             </div>
             <div class="item">
                 <label for="producttype">Search Product Type</label>
-                <div>
-                    <button @click="showDropdown">Select your product type</button>
-                    <div ref="myDropdown" class="dropdown-content">
-                        <option v-for="product in products" :key="product.id" @click="searchProducts2(product.ProductType)">{{product.ProductType}}</option>
-                    </div>
-                </div>
+               <select v-model="type" @change="searchProducts2">
+                    <option>Books</option>
+                    <option>Games</option>
+                    <option>Music</option>
+               </select>
             </div>
             <div class="item">
                 <label for="quantity">Quantity</label>
@@ -71,6 +69,7 @@
 import axios from 'axios'
 import { mapGetters, mapActions } from 'vuex' 
 
+
  export default{
     name:'Products',
     data: () => {
@@ -79,8 +78,11 @@ import { mapGetters, mapActions } from 'vuex'
             results :[],
             query: "",
             quantity: "",
+            type:"",
             hide: false,
-            modal: false   
+            modal: false,
+           
+        
         }
     },
     computed: {
@@ -95,25 +97,32 @@ import { mapGetters, mapActions } from 'vuex'
         signOut(){
             this.logout()
         },
-        async getProducts(){
-           const BASE_ENDPOINT = "http://localhost:3001/product" 
+         async searchProducts(){
+
+            const BASE_ENDPOINT = "http://localhost:3001/product?q" 
+            const REQ_ENDPOINT = `${BASE_ENDPOINT}=${this.query}`
             try{
-              const res = await axios.get(BASE_ENDPOINT) 
+              const res = await axios.get(REQ_ENDPOINT) 
               if(res.status == 200){
+                console.log(res.data)
                 this.products = res.data 
               } 
             } catch(err){
                 console.log(err)
             }
         },
-        searchProducts(){
-            let result = this.products.filter(products => products.ProductName === this.query )
-            
-            this.results = result
-        },
-        searchProducts2(type){
-            let result = this.products.filter(products => products.ProductType === type)
-            this.results = result
+        async searchProducts2(){
+            const BASE_ENDPOINT = "http://localhost:3001/product?q" 
+            const REQ_ENDPOINT = `${BASE_ENDPOINT}=${this.type}`
+            try{
+              const res = await axios.get(REQ_ENDPOINT) 
+              if(res.status == 200){
+                console.log(res.data)
+                this.products = res.data 
+              } 
+            } catch(err){
+                console.log(err)
+            }
         },
         showDropdown(){
             this.$refs.myDropdown.classList.toggle("show");
@@ -146,10 +155,7 @@ import { mapGetters, mapActions } from 'vuex'
         async getTable(){
 
         }
-    },
-    mounted(){
-        this.getProducts()
-    }  
+    }
  }
 </script>
 
