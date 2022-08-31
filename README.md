@@ -8,6 +8,7 @@ npm install
 ### Compiles and hot-reloads for development
 ```
 npm run serve
+npm run db:serve for JSON Server 
 ```
 
 ### Compiles and minifies for production
