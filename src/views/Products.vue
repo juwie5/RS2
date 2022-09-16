@@ -2,7 +2,8 @@
     <div class="contain">
         <nav class="navbar">
             <ul>
-                <li @click="signOut">Logout</li>
+                <li>{{user[0].LoginName}}</li>
+                <li @click="signOut">Logout</li> 
             </ul>
         </nav>
         <section>
@@ -24,13 +25,14 @@
                 <label for="quantity">Quantity</label>
                 <input type="number" required v-model="quantity">
             </div>
-            <button @click="showTable" class="add-btn">Add</button>
+            <button @click="checkEntry" class="add-btn">Add</button>
           </div>
         </section>
-        <section >
-            <div v-for="result in results" :key="result.id" class="result">
-                <h3>{{result.ProductName}}</h3>
-                <h3>{{result.ProductType}}</h3>
+        <section>
+            <div v-for="product in products" :key="product.id" class="result">
+                <h3>{{product.ProductName}}</h3>
+                <h3>{{product.ProductType}}</h3>
+                <h3>{{product.Description}}</h3>
             </div>
         </section>
         <section>
@@ -51,9 +53,7 @@
                     <td>{{result.Description}}</td>
                     <td>{{quantity}}</td>
                     </tr>
-                </tbody>
-                
-                
+                </tbody>  
             </table>
 
             <div @click="modal = !modal" v-if="modal" class="modal">
@@ -68,9 +68,7 @@
 <script>
 import axios from 'axios'
 import { mapGetters, mapActions } from 'vuex' 
-
-
- export default{
+export default{
     name:'Products',
     data: () => {
         return{
@@ -79,10 +77,8 @@ import { mapGetters, mapActions } from 'vuex'
             query: "",
             quantity: "",
             type:"",
-            hide: false,
+            hide: true,
             modal: false,
-           
-        
         }
     },
     computed: {
@@ -98,13 +94,12 @@ import { mapGetters, mapActions } from 'vuex'
             this.logout()
         },
          async searchProducts(){
-
+            console.log(this.user)
             const BASE_ENDPOINT = "http://localhost:3001/product?q" 
             const REQ_ENDPOINT = `${BASE_ENDPOINT}=${this.query}`
             try{
               const res = await axios.get(REQ_ENDPOINT) 
               if(res.status == 200){
-                console.log(res.data)
                 this.products = res.data 
               } 
             } catch(err){
@@ -117,43 +112,54 @@ import { mapGetters, mapActions } from 'vuex'
             try{
               const res = await axios.get(REQ_ENDPOINT) 
               if(res.status == 200){
-                console.log(res.data)
+                // console.log(res.data)
                 this.products = res.data 
               } 
             } catch(err){
                 console.log(err)
             }
         },
-        showDropdown(){
-            this.$refs.myDropdown.classList.toggle("show");
-        },
         async showTable(){
-            this.hide = true
-            var data = JSON.stringify({
-            "id": "1",
-            "userId": "1",
-            "productId": `${this.results.id}`
-            });
-
-            var config = {
+          const BASE_ENDPOINT = "http://localhost:3001/show"
+          console.log(this.products)
+          let data = JSON.stringify({
+            "showName": `${this.products[0].ProductName}`,
+            "showType": `${this.products[0].ProductType}`,
+            "showDes": `${this.products[0].Description}`,
+             "amount":  `${this.quantity}`   
+          })
+          console.log(data)
+          let config = {
             method: 'post',
-            url: 'http://localhost:3001/show',
+            url: `${BASE_ENDPOINT}`,
             headers: { 
                 'Content-Type': 'application/json'
             },
             data : data
-            }
+            };
+
             axios(config)
             .then(function (response) {
-            //console.log(JSON.stringify(response.data));
+            console.log(JSON.stringify(response.data));
             })
             .catch(function (error) {
-              this.modal = true
             console.log(error);
             });
         }, 
-        async getTable(){
-
+        async checkEntry(){
+            const BASE_ENDPOINT = "http://localhost:3001/show?q"
+            const REQ_ENDPOINT = `${BASE_ENDPOINT}=${this.products[0].ProductName}`
+            try{
+                const res = await axios.get(REQ_ENDPOINT)
+                if( res.data == null){
+                    console.log(res.data)
+                    this.modal = true
+                } else {
+                    this.showTable()
+                }
+            } catch(err){
+                console.log(err)
+            }
         }
     }
  }

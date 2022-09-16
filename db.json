@@ -42,9 +42,18 @@
   ],
   "show": [
     {
-      "id": "1",
-      "userId": "1",
-      "productId": "undefined"
+      "showName": "The Godfather",
+      "showType": "Books",
+      "showDes": "A staggering triumph...,the definitive novel about a sinister fraternity of crime",
+      "amount": "100",
+      "id": 1
+    },
+    {
+      "showName": "Assassin's Creed",
+      "showType": "Games",
+      "showDes": "Action-adventure  game set in an open world environment",
+      "amount": "10",
+      "id": 2
     }
   ]
 }

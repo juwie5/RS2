@@ -4,7 +4,7 @@ import router from '../router/index'
 export default{
     namespaced: true,
     state: {
-        user: null,
+        user: null
     },
 
     getters: {
@@ -17,7 +17,7 @@ export default{
     },
     mutations: {
         SET_USER (state, data){
-            state.user = data 
+            state.user = JSON.parse(data)
           },     
     },
     actions: {
@@ -29,9 +29,8 @@ export default{
           try{
             const res = await axios.get(REQ_ENDPOINT);
             if( res.status == 200){
-                  console.log(res.data)
                   router.push('/product')
-                  commit('SET_USER', res.data)
+                  commit('SET_USER', JSON.stringify(res.data))
               }  
               } catch (err){
                 console.log(err)
