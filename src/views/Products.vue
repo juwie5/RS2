@@ -27,6 +27,7 @@
             </div>
             <button @click="checkEntry" class="add-btn">Add</button>
           </div>
+           <p v-show="hide" class="red">Select a product</p>
         </section>
         <section>
             <div v-for="product in products" :key="product.id" class="result">
@@ -37,7 +38,7 @@
         </section>
         <section>
             <h2>Products Table</h2>
-            <table v-show="hide">
+            <table>
                 <thead>
                     <tr>
                         <th>Product Name</th>
@@ -48,17 +49,17 @@
                 </thead>
                 <tbody v-for="result in results" :key="result.id">
                     <tr>
-                    <td>{{result.ProductName}}</td>
-                    <td>{{result.ProductType}}</td>
-                    <td>{{result.Description}}</td>
-                    <td>{{quantity}}</td>
+                    <td>{{result.showName}}</td>
+                    <td>{{result.showType}}</td>
+                    <td>{{result.showDes}}</td>
+                    <td>{{result.amount}}</td>
                     </tr>
                 </tbody>  
             </table>
 
             <div @click="modal = !modal" v-if="modal" class="modal">
             <div class="status">
-                 <h3 class="cnt-h3">You can only add one product</h3>
+                 <h3 class="cnt-h3">You can only add one of this product</h3>
             </div>
         </div>
         </section>
@@ -77,7 +78,7 @@ export default{
             query: "",
             quantity: "",
             type:"",
-            hide: true,
+            hide: false,
             modal: false,
         }
     },
@@ -119,7 +120,7 @@ export default{
                 console.log(err)
             }
         },
-        async showTable(){
+        async addEntry(){
           const BASE_ENDPOINT = "http://localhost:3001/show"
           console.log(this.products)
           let data = JSON.stringify({
@@ -128,7 +129,6 @@ export default{
             "showDes": `${this.products[0].Description}`,
              "amount":  `${this.quantity}`   
           })
-          console.log(data)
           let config = {
             method: 'post',
             url: `${BASE_ENDPOINT}`,
@@ -146,25 +146,39 @@ export default{
             console.log(error);
             });
         }, 
-        async checkEntry(){
-            const BASE_ENDPOINT = "http://localhost:3001/show?q"
-            const REQ_ENDPOINT = `${BASE_ENDPOINT}=${this.products[0].ProductName}`
+          async showTable(){
+            const REQ_ENDPOINT = "http://localhost:3001/show"
             try{
                 const res = await axios.get(REQ_ENDPOINT)
-                if( res.data == null){
+                if(res.status == 200){
                     console.log(res.data)
-                    this.modal = true
-                } else {
+                    this.results = res.data
+                }
+            }catch(err){
+                console.log(err)
+            }
+        },
+        async checkEntry(){ 
+              const BASE_ENDPOINT = "http://localhost:3001/show?q"
+              const REQ_ENDPOINT = `${BASE_ENDPOINT}=${this.products[0].ProductName}`
+               try{
+                const res = await axios.get(REQ_ENDPOINT)
+                if(res.data.length === 0){
+                    this.addEntry()
                     this.showTable()
+                }
+                else{
+                    this.modal = true
                 }
             } catch(err){
                 console.log(err)
             }
-        }
-    }
+        },
+      
+    },
+   
  }
 </script>
-
 
 <style lang="scss">
 
