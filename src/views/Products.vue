@@ -7,8 +7,8 @@
             </ul>
         </nav>
         <section>
-            <h1>Products Page</h1>
-          <div class="product">
+          <h1>Products Page</h1>
+          <form class="product" @submit.prevent="checkEntry" >
             <div class="item">
                 <label for="productname">Search Product Name</label>
                 <input type="text" v-model="query" @keypress.enter="searchProducts" maxlength="30" pattern="[A-Za-z]">
@@ -25,8 +25,8 @@
                 <label for="quantity">Quantity</label>
                 <input type="number" required v-model="quantity">
             </div>
-            <button @click="checkEntry" class="add-btn">Add</button>
-          </div>
+            <button class="add-btn">Add</button>
+        </form>
            <p v-show="hide" class="red">Select a product</p>
         </section>
         <section>
@@ -85,7 +85,8 @@ export default{
     computed: {
         ...mapGetters({
             user : 'auth/user'
-        })
+        }),
+        
     },
     methods: {
         ...mapActions({
@@ -146,13 +147,13 @@ export default{
             console.log(error);
             });
         }, 
-          async showTable(){
+        async showTable(){
             const REQ_ENDPOINT = "http://localhost:3001/show"
             try{
                 const res = await axios.get(REQ_ENDPOINT)
                 if(res.status == 200){
                     console.log(res.data)
-                    this.results = res.data
+                   return this.results = res.data
                 }
             }catch(err){
                 console.log(err)
@@ -173,9 +174,14 @@ export default{
             } catch(err){
                 console.log(err)
             }
-        },
-      
+        } 
     },
+    beforeUpdate(){
+        this.showTable()
+    },
+    mounted(){
+        this.showTable() 
+    }
    
  }
 </script>
